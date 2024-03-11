@@ -9,6 +9,7 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
 use Carbon\Carbon;
+use Illuminate\Auth\Events\Registered;
 
 class GoogleLoginController extends Controller
 {
@@ -46,6 +47,6 @@ class GoogleLoginController extends Controller
             Auth::login($newUser);
         }
 
-        return redirect()->intended(config('app.frontend_url').RouteServiceProvider::HOME);
+        return redirect()->intended(config('app.frontend_url').RouteServiceProvider::NEW_LISTING);
     }
 }
