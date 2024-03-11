@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GoogleLoginController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\TwitterLoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +23,5 @@ Route::get('/login/google/callback', [GoogleLoginController::class, 'handleGoogl
 
 Route::get('/login/twitter', [TwitterLoginController::class, 'redirectToTwitter'])->name('auth.twitter');
 Route::get('/login/twitter/callback', [TwitterLoginController::class, 'handleTwitterCallback']);
+
+Route::get('/', [TestController::class, 'home']);
