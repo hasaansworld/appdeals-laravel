@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('price_currency');
             $table->float('old_price')->nullable();
             $table->string('type')->nullable();
+            $table->string('url')->nullable();
             $table->dateTime('ends_on');
             $table->timestamps();
         });

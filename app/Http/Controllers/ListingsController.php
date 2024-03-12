@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Listings;
+use App\Http\Resources\ListingResource;
+use App\Models\Listing;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Laravel\Facades\Image;
 
 class ListingsController extends Controller
 {
     public function createListing(Request $request) {
-        $listing = Listings::create([
+        $listing = Listing::create([
             'user_id' => Auth::user()->id,
             'app_name' => $request->appName,
             'short_description' => $request->shortDescription,
@@ -21,6 +21,9 @@ class ListingsController extends Controller
             'price' => $request->price,
             'price_currency' => $request->priceCurrency,
             'old_price' => $request->oldPrice,
+            'type' => $request->type,
+            'url' => $request->url,
+            'website_url' => $request->websiteURL,
             'ends_on' => Carbon::now()->addDays($request->endsIn),
         ]);
 
@@ -31,6 +34,16 @@ class ListingsController extends Controller
         $listing->save();
 
         return $listing;
+    }
+
+    public function getAllListings() {
+        $allListings = ListingResource::collection(Listing::all());
+        return $allListings;
+    }
+
+    public function getListing(Request $request, $id) {
+        $listing = Listing::find($id);
+        return new ListingResource($listing);
     }
 
     private function uploadFile($file) {

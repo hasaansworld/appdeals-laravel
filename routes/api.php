@@ -20,7 +20,9 @@ Route::middleware(['auth:sanctum'])->group(function() {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    
+
     Route::post('/create-listing', [ListingsController::class, 'createListing']);
 });
 
+Route::get('/all-listings', [ListingsController::class, 'getAllListings']);
+Route::get('/get-listing/{id}', [ListingsController::class, 'getListing']);
