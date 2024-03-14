@@ -37,7 +37,7 @@ class ListingsController extends Controller
         return $listing;
     }
 
-    public function getAllListings(Request $request,) {
+    public function getAllListings(Request $request) {
         $search = $request->query('q');
         if ($search) {
             $allListings = Listing::where('app_name', 'LIKE', "%$search%")
@@ -49,6 +49,11 @@ class ListingsController extends Controller
             $allListings = ListingResource::collection(Listing::all());
         }
         return $allListings;
+    }
+
+    public function getRandomListings() {
+        $randomListings = ListingResource::collection(Listing::inRandomOrder()->take(5)->get());
+        return $randomListings;
     }
 
     public function getListing(Request $request, $id) {
