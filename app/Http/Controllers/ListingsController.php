@@ -7,6 +7,7 @@ use App\Models\Listing;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ListingsController extends Controller
@@ -36,13 +37,22 @@ class ListingsController extends Controller
         return $listing;
     }
 
-    public function getAllListings() {
-        $allListings = ListingResource::collection(Listing::all());
+    public function getAllListings(Request $request,) {
+        $search = $request->query('q');
+        Log::info("search: $search");
+        if ($search) {
+            $allListings = Listing::where('app_name', 'LIKE', "%$search%")
+                        ->orWhere('short_description', 'LIKE', "%$search%")
+                        ->orWhere('introduction', 'LIKE', "%$search%")
+                        ->get();
+        } else {
+            $allListings = ListingResource::collection(Listing::all());
+        }
         return $allListings;
     }
 
     public function getListing(Request $request, $id) {
-        $listing = Listing::find($id);
+            $listing = Listing::find($id);
         return new ListingResource($listing);
     }
 
