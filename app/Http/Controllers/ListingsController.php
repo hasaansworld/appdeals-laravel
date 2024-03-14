@@ -56,6 +56,11 @@ class ListingsController extends Controller
         return $randomListings;
     }
 
+    public function getListingsCount() {
+        $count = Listing::count();
+        return $count;
+    }
+
     public function getListing(Request $request, $id) {
             $listing = Listing::find($id);
         return new ListingResource($listing);

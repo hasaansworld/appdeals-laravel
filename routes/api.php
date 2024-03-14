@@ -27,3 +27,4 @@ Route::middleware(['auth:sanctum'])->group(function() {
 Route::get('/all-listings', [ListingsController::class, 'getAllListings']);
 Route::get('/get-listing/{id}', [ListingsController::class, 'getListing']);
 Route::get('/random-listings', [ListingsController::class, 'getRandomListings']);
+Route::get('/listings-count', [ListingsController::class, 'getListingsCount']);
