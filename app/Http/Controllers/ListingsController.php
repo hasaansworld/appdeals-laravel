@@ -39,12 +39,12 @@ class ListingsController extends Controller
 
     public function getAllListings(Request $request,) {
         $search = $request->query('q');
-        Log::info("search: $search");
         if ($search) {
             $allListings = Listing::where('app_name', 'LIKE', "%$search%")
                         ->orWhere('short_description', 'LIKE', "%$search%")
                         ->orWhere('introduction', 'LIKE', "%$search%")
                         ->get();
+            $allListings = ListingResource::collection($allListings);
         } else {
             $allListings = ListingResource::collection(Listing::all());
         }
