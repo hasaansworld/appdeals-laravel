@@ -22,6 +22,7 @@ Route::middleware(['auth:sanctum'])->group(function() {
     });
 
     Route::post('/create-listing', [ListingsController::class, 'createListing']);
+    Route::get('/can-submit', [ListingsController::class, 'canSubmit']);
 });
 
 Route::get('/all-listings', [ListingsController::class, 'getAllListings']);

@@ -91,6 +91,13 @@ class ListingsController extends Controller
         return new ListingResource($listing);
     }
 
+    public function canSubmit() {
+        $user = Auth::user();
+        if ($user->email === 'hasaanahmed.pk@gmail.com') return ['userCanSubmit' => true];
+        $createdCount = Listing::where('user_id', $user->id)->where('created_at', '>', Carbon::now()->subDay())->count();
+        return ['userCanSubmit' => $createdCount === 0];
+    }
+
     private function uploadFile($file) {
         if (!$file) return null;
         $path = Storage::disk('s3')->put('uploads', $file);
