@@ -44,7 +44,7 @@ class GoogleLoginController extends Controller
             if (!$existingEmailUser) {
                 event(new Registered($user));
             }
-            Auth::login($newUser);
+            Auth::login($newUser, true);
         }
 
         return redirect()->intended(config('app.frontend_url').RouteServiceProvider::NEW_LISTING);
