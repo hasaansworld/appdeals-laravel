@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ListingResource;
 use App\Models\Listing;
 use Carbon\Carbon;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ListingsController extends Controller
@@ -53,7 +51,7 @@ class ListingsController extends Controller
     public function getAllListings(Request $request) {
         $search = $request->query('q');
         if ($search) {
-            $allListings = Listing::where(function (Builder $query) use($search) {
+            $allListings = Listing::where(function ($query) use($search) {
                 $query->where('app_name', 'LIKE', "%$search%")
                     ->orWhere('short_description', 'LIKE', "%$search%")
                     ->orWhere('introduction', 'LIKE', "%$search%");
