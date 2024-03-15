@@ -70,11 +70,14 @@ class ListingsController extends Controller
         return $allListings;
     }
 
-    public function getRandomListings() {
-        $randomListings = ListingResource::collection(
-            Listing::where('approved', true)
-                    ->where('ends_on', '>', Carbon::now())->inRandomOrder()->take(6)->get()
-        );
+    public function getRandomListings(Request $request) {
+        $query = Listing::where('approved', true)
+                ->where('ends_on', '>', Carbon::now());
+        if ($request->query('exclude')) {
+            $query = $query->whereNot('name_id', $request->query('exclude'));
+        }
+        $listings = $query->inRandomOrder()->take(6)->get();
+        $randomListings = ListingResource::collection($listings);
         return $randomListings;
     }
 
