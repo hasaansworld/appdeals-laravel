@@ -73,7 +73,7 @@ class ListingsController extends Controller
     public function getRandomListings() {
         $randomListings = ListingResource::collection(
             Listing::where('approved', true)
-                    ->where('ends_on', '>', Carbon::now())->inRandomOrder()->take(5)->get()
+                    ->where('ends_on', '>', Carbon::now())->inRandomOrder()->take(6)->get()
         );
         return $randomListings;
     }
