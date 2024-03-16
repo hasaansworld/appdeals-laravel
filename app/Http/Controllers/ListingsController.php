@@ -58,12 +58,14 @@ class ListingsController extends Controller
             })
             ->where('approved', true)
             ->where('ends_on', '>', Carbon::now())
+            ->latest()
             ->get();
             $allListings = ListingResource::collection($allListings);
         } else {
             $allListings = ListingResource::collection(
                 Listing::where('approved', true)
                     ->where('ends_on', '>', Carbon::now())
+                    ->latest()
                     ->get()
             );
         }
