@@ -16,7 +16,7 @@ class ProtectGuestRoutes
     public function handle(Request $request, Closure $next): Response
     {
         if ($request->bearerToken() !== env('FRONTEND_TOKEN')) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
+            return response()->json(['message' => 'Not authenticated.'], 401);
         }
         return $next($request);
     }
