@@ -25,6 +25,7 @@ class GoogleLoginController extends Controller
         $existingUser = User::where('google_id', $user->id)->first();
 
         if ($existingUser) {
+            $existingUser->update(['name' => $user->getName(), 'email' => $user->getEmail(), 'profile_picture' => $user->getAvatar()]);
             Auth::login($existingUser);
         } else {
             $existingEmailUser = User::where('email', $user->getEmail())->first();
