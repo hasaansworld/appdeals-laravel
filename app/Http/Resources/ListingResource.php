@@ -16,6 +16,7 @@ class ListingResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'approved' => $this->approved,
             'nameId' => $this->name_id,
             'appIcon' => $this->icon_url,
             'appName' => $this->app_name,
