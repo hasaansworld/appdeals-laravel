@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ListingsController;
+use App\Http\Middleware\ProtectGuestRoutes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,7 +26,9 @@ Route::middleware(['auth:sanctum'])->group(function() {
     Route::get('/can-submit', [ListingsController::class, 'canSubmit']);
 });
 
-Route::get('/all-listings', [ListingsController::class, 'getAllListings']);
-Route::get('/get-listing/{name_id}', [ListingsController::class, 'getListing']);
-Route::get('/random-listings', [ListingsController::class, 'getRandomListings']);
-Route::get('/listings-count', [ListingsController::class, 'getListingsCount']);
+Route::middleware([ProtectGuestRoutes::class])->group(function () {
+    Route::get('/all-listings', [ListingsController::class, 'getAllListings']);
+    Route::get('/get-listing/{name_id}', [ListingsController::class, 'getListing']);
+    Route::get('/random-listings', [ListingsController::class, 'getRandomListings']);
+    Route::get('/listings-count', [ListingsController::class, 'getListingsCount']);
+});
