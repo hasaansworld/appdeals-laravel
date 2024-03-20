@@ -129,10 +129,9 @@ class ListingsController extends Controller
         }
 
         $files = $request->allFiles();
-        $inputs = $request->all();
-        $data = array_filter($inputs, function ($key) use ($files) {
-            return !array_key_exists($key, $files);
-        });
+        $exclude = ['icon_file', 'image_1', 'image_2', 'image_3', 'ends_in'];
+
+        $data = $request->except($exclude);
 
         foreach ($files as $key => $file) {
             Log::info("File:", $key);
