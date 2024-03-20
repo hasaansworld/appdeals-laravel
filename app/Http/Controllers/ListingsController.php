@@ -128,15 +128,27 @@ class ListingsController extends Controller
             return response("Forbidden", 403);
         }
 
-        $files = $request->allFiles();
-        $exclude = ['icon_file', 'image_1', 'image_2', 'image_3', 'ends_in'];
+        $exclude = ['icon_url', 'image_1', 'image_2', 'image_3', 'ends_in'];
 
-        $data = $request->except($exclude);
-
-        foreach ($files as $key => $file) {
-            Log::info("File:", $key);
+        foreach ($exclude as $key) {
+            if ($key === "ends_in") continue;
+            if ($request->hasFile($key)) {
+                $url = $this->uploadFile($request->file($key));
+                if (isset($listing[$key])) {
+                    $this->deleteFile($listing->{$key});
+                }
+                $listing->update([$key => $url]);
+            } else {
+                $file = $request->input($key);
+                // user removed image
+                if (empty($file) && isset($listing[$key])) {
+                    $this->deleteFile($listing->{$key});
+                    $listing->update([$key => null]);
+                }
+            }
         }
 
+        $data = $request->except($exclude);
         $listing->update($data);
         return response('Successfully updated');
     }
@@ -147,5 +159,12 @@ class ListingsController extends Controller
         $path = Storage::disk('s3')->put($local ? 'local/uploads' : 'uploads', $file);
         $url = Storage::disk('s3')->url($path);
         return $url;
+    }
+
+    private function deleteFile($url) {
+        $oldUrl = $url;
+        $parts = explode('http://' .env("AWS_BUCKET") . '.s3.amazonaws.com/', $oldUrl);
+        $objectId = end($parts);
+        $res = Storage::disk('s3')->delete($objectId);
     }
 }
