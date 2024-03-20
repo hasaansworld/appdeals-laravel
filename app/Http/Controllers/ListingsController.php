@@ -103,6 +103,12 @@ class ListingsController extends Controller
         return ['userCanSubmit' => $createdCount === 0];
     }
 
+    public function getUsersListings() {
+        $user = Auth::user();
+        $usersListings = Listing::where('user_id', $user->id)->latest()->get();
+        return ListingResource::collection($usersListings);
+    }
+
     private function uploadFile($file) {
         if (!$file) return null;
         $path = Storage::disk('s3')->put('uploads', $file);
