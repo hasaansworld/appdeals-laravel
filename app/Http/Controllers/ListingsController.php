@@ -132,18 +132,20 @@ class ListingsController extends Controller
 
         foreach ($exclude as $key) {
             if ($key === "ends_in") continue;
-            if ($request->hasFile($key)) {
-                $url = $this->uploadFile($request->file($key));
-                if (isset($listing[$key])) {
-                    $this->deleteFile($listing->{$key});
-                }
-                $listing->update([$key => $url]);
-            } else {
-                $file = $request->input($key);
-                // user removed image
-                if (empty($file) && isset($listing[$key])) {
-                    $this->deleteFile($listing->{$key});
-                    $listing->update([$key => null]);
+            if ($request->has($key)) {
+                if ($request->hasFile($key)) {
+                    $url = $this->uploadFile($request->file($key));
+                    if (isset($listing[$key])) {
+                        $this->deleteFile($listing->{$key});
+                    }
+                    $listing->update([$key => $url]);
+                } else {
+                    $file = $request->input($key);
+                    // user removed image
+                    if (empty($file) && isset($listing[$key])) {
+                        $this->deleteFile($listing->{$key});
+                        $listing->update([$key => null]);
+                    }
                 }
             }
         }
