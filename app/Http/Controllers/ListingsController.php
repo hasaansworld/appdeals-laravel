@@ -143,7 +143,8 @@ class ListingsController extends Controller
 
     private function uploadFile($file) {
         if (!$file) return null;
-        $path = Storage::disk('s3')->put('uploads', $file);
+        $local = app()->environment() === 'local';
+        $path = Storage::disk('s3')->put($local ? 'local/uploads' : 'uploads', $file);
         $url = Storage::disk('s3')->url($path);
         return $url;
     }
