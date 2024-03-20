@@ -7,6 +7,7 @@ use App\Models\Listing;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ListingsController extends Controller
@@ -56,6 +57,7 @@ class ListingsController extends Controller
                     ->orWhere('short_description', 'LIKE', "%$search%")
                     ->orWhere('introduction', 'LIKE', "%$search%");
             })
+            ->where('active', true)
             ->where('approved', true)
             ->where('ends_on', '>', Carbon::now())
             ->latest()
@@ -64,6 +66,7 @@ class ListingsController extends Controller
         } else {
             $allListings = ListingResource::collection(
                 Listing::where('approved', true)
+                    ->where('active', true)
                     ->where('ends_on', '>', Carbon::now())
                     ->latest()
                     ->get()
@@ -74,6 +77,7 @@ class ListingsController extends Controller
 
     public function getRandomListings(Request $request) {
         $query = Listing::where('approved', true)
+                ->where('active', true)
                 ->where('ends_on', '>', Carbon::now());
         if ($request->query('exclude')) {
             $query = $query->whereNot('name_id', $request->query('exclude'));
@@ -89,8 +93,13 @@ class ListingsController extends Controller
     }
 
     public function getListing(Request $request, $name_id) {
+        $user = Auth::user();
         $listing = Listing::where('name_id', $name_id)
-            ->where('approved', true)
+            ->where(function ($query) use($user) {
+                $query->where('approved', true)
+                ->where('active', true)
+                ->orWhere('user_id', !is_null($user) ? $user->id : 0);
+            })
             ->where('ends_on', '>', Carbon::now())
             ->first();
         return new ListingResource($listing);
@@ -107,6 +116,30 @@ class ListingsController extends Controller
         $user = Auth::user();
         $usersListings = Listing::where('user_id', $user->id)->latest()->get();
         return ListingResource::collection($usersListings);
+    }
+
+    public function updateListing(Request $request, $name_id) {
+        $user = Auth::user();
+        $listing = Listing::where('name_id', $name_id)->first();
+        if (!$listing) {
+            abort(404, "Not found");
+        }
+        if ($listing->user_id !== $user->id) {
+            return response("Forbidden", 403);
+        }
+
+        $files = $request->allFiles();
+        $inputs = $request->all();
+        $data = array_filter($inputs, function ($key) use ($files) {
+            return !array_key_exists($key, $files);
+        });
+
+        foreach ($files as $key => $file) {
+            Log::info("File:", $key);
+        }
+
+        $listing->update($data);
+        return response('Successfully updated');
     }
 
     private function uploadFile($file) {
