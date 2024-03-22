@@ -102,6 +102,9 @@ class ListingsController extends Controller
             })
             ->where('ends_on', '>', Carbon::now())
             ->first();
+        if (!$listing) {
+            return abort(404, "This listing does not exist");
+        }
         return new ListingResource($listing);
     }
 
