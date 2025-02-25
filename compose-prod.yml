@@ -21,9 +21,6 @@ services:
       restart_policy:
         condition: on-failure
         max_attempts: 3
-    labels:
-      "coolify.enable": "true"
-      "coolify.fpm": "true"
 
   mysql:
     image: "mysql/mysql-server:8.0"
