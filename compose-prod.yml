@@ -22,8 +22,8 @@ services:
         condition: on-failure
         max_attempts: 3
     labels:
-      coolify.enable: "true"
-      coolify.fpm: "true" # This tells Coolify it's a PHP-FPM container
+      "coolify.enable": "true"
+      "coolify.fpm": "true"
 
   mysql:
     image: "mysql/mysql-server:8.0"
